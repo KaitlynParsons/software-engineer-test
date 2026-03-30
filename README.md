@@ -10,9 +10,9 @@ In web pages, heading elements (`h1-h6`) are used to impose semantic structure o
 
 One "problem" that arises is skipping heading levels. For example, going from `h2` to `h4` without a `h3` in between. While this is also valid HTML, [it isn't best practice](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements#Usage_notes).
 
-Often, heading elements appear within the context of structural elements, such as `<div>` elements that have no real semantics attached to them, or structural elements, such as `<section>`, which *do* carry meaning within the structure of a web page. Sometimes, an incongruence or conflict emerges between the innate semantics of the heading elements and imposed semantics due to the use of nested structural elements. As the HTML Standard [notes](https://html.spec.whatwg.org/multipage/sections.html#headings-and-sections):
+Often, heading elements appear within the context of structural elements, such as `<div>` elements that have no real semantics attached to them, or structural elements, such as `<section>`, which _do_ carry meaning within the structure of a web page. Sometimes, an incongruence or conflict emerges between the innate semantics of the heading elements and imposed semantics due to the use of nested structural elements. As the HTML Standard [notes](https://html.spec.whatwg.org/multipage/sections.html#headings-and-sections):
 
->Sections may contain headings of any rank, but authors are strongly encouraged to either use only h1 elements, or to use elements of the appropriate rank for the section's nesting level.
+> Sections may contain headings of any rank, but authors are strongly encouraged to either use only h1 elements, or to use elements of the appropriate rank for the section's nesting level.
 
 For instance, consider this simple scenario:
 
@@ -33,8 +33,10 @@ These problems have a number of potential implications, including in the areas o
 ### Challenge
 
 Your challenge, should you choose to accept it, is two-fold:
+
 1. Extract the semantic structure of any web page implied by heading elements `h1-h6`. The result should be a, possibly multi-rooted, tree structure. For example, the sequence `h1`, `h2`, `h2`, `h3`, `h4`, `h2`, `h5` yields the tree `[h1, [h2, h2, [h3, [h4]], h2, [h5]]]` assuming a pre-ordered notation. Represent each heading as a node in a tree where each node consists of a tag, content and children, like `{"tag": "h1", "content": "Heading 1", "children": []`, where the list of children contains nodes of the same form. When a heading level is skipped, for example going from `h2` to `h4`, add the pair of headings on either side of the skipped levels as a tuple to an array. For this part of the task you can ignore any other elements in the page.
 1. Check the extracted semantic structure against the actual containment structure of the page, adding to an array any heading element that deviates from the guideline given in the HTML spec "to either use only h1 elements, or to use elements of the appropriate rank for the section's nesting level". For example, if the above heading sequence is shown in the context of the following structure:
+
 ```
 <section>
   <h1/>
@@ -52,15 +54,18 @@ Your challenge, should you choose to accept it, is two-fold:
       </section>
     </section>
    </section>
- </section> 
+ </section>
 ```
+
 The final `h2` element would be added to the array because the container structure puts that `h2` element in a nested position relative to the position of the `h4` element that precedes it, despite the `h2` element carrying more semantic weight. Use the same object representation as above.
 
 Structure your code so that it can be run as a:
+
 1. standalone command on the command line, where the URL to process is given as an argument, e.g., `checkheadings https://foo.com`
 1. little web app that takes a URL as a URL parameter, e.g., `http://localhost:8000?u=https://foo.com`
 
 In both cases, the result should be a well-formed JSON object encapsulating the outputs of the two parts of the task above. For example, given the above example, the response might look something like this:
+
 ```
 {
   "semantic-structure": [
@@ -118,7 +123,7 @@ Add a description of your approach to the bottom of this README, including a not
 
 ### Criteria
 
-Assuming that you submit a "correct" solution, we are then first and foremost interested to see *how* you solve the problem. That is our top criterion below.
+Assuming that you submit a "correct" solution, we are then first and foremost interested to see _how_ you solve the problem. That is our top criterion below.
 
 1. Elegance/simplicity of your solution
 1. Elegance/readability of your code (note: this is very distinct from the first criterion!)
@@ -132,4 +137,36 @@ Create your solution there and, when it's ready, add @ckortekaas to your fork, a
 
 ---
 
-Your comments go here.
+### Solution
+
+The approach I took to this solution was to create a simple class that takes a url and provides a public method to evalute the semantics of its heading structure. It hides the code complexity behind a simple interface(this thinking comes from "A Philosophy of Software Design") and has a computation complexity of O(n) where n is the number of headings in the DOM. The given example for the challenge would evalute to O(7).
+
+### Running the Solution
+
+1. install the dependencies
+
+```zsh
+pnpm install
+```
+
+2. run the tests
+
+```zsh
+pnpm run test
+```
+
+3. run the web app
+
+```zsh
+pnpm run dev
+```
+
+- navigate to http://localhost:5173
+- to evaluate the semantic structure of a url via the web app, add a "url" query param. Eg, http://localhost:5173/?url=https://kaitlynparsons.vercel.app/
+- the user interface will display a prettified json object in the same output suggested by the challenge.
+
+4. run the command line tool
+
+```zsh
+pnpm checkheadings https://kaitlynparsons.vercel.app/
+```
