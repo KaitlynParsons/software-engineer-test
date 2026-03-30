@@ -30,13 +30,13 @@ function App() {
     if (!urlToEvaluate) return;
 
     (async () => {
-      try {
-        const semanticEvaluator = new SemanticEvaluator(urlToEvaluate);
-        const headingsEvaluation = await semanticEvaluator.evaluateHeadings();
-        setSemanticEvaluation(headingsEvaluation);
-      } catch {
-        setIsError(true);
+      const semanticEvaluator = new SemanticEvaluator(urlToEvaluate);
+      if (!semanticEvaluator.isValidUrl()) {
+        return setIsError(true);
       }
+
+      const headingsEvaluation = await semanticEvaluator.evaluateHeadings();
+      setSemanticEvaluation(headingsEvaluation);
     })();
   }, [urlToEvaluate]);
 
@@ -51,7 +51,7 @@ function App() {
   if (isError) {
     return (
       <section id="center">
-        <p>Invalid URL.</p>
+        <p>Invalid URL, it must come from a secure HTTPS address.</p>
       </section>
     );
   }

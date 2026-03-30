@@ -22,11 +22,10 @@ const printTree = (nodes: TreeNode[] | TreeElement[], depth = 0) => {
 
 console.log(`\nChecking headings for: ${url}\n`);
 
-let evaluator: SemanticEvaluator;
-try {
-  evaluator = new SemanticEvaluator(url, false);
-} catch {
-  console.error(`Invalid URL: "${url}"`);
+const evaluator = new SemanticEvaluator(url, false);
+
+if (!evaluator.isValidUrl()) {
+  console.error(`Invalid URL: "${url}", url must come from a secure https address.`);
   process.exit(1);
 }
 

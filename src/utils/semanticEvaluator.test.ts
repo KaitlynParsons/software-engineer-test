@@ -47,13 +47,17 @@ const semanticallyValidHTML = `
 `;
 
 describe("SemanticEvaluator", () => {
-  describe("constructor", () => {
-    it("should throw for a malformed URL", () => {
-      expect(() => new SemanticEvaluator("not-a-url")).toThrow(TypeError);
+  describe("isValidUrl", () => {
+    it("should return false for a malformed URL", () => {
+      const isValidUrl = new SemanticEvaluator("http://example.com").isValidUrl();
+
+      expect(isValidUrl).toBe(false);
     });
 
-    it("should not throw for a valid URL", () => {
-      expect(() => new SemanticEvaluator("https://example.com")).not.toThrow();
+    it("should return true for a valid URL", () => {
+      const isValidUrl = new SemanticEvaluator("https://example.com").isValidUrl();
+
+      expect(isValidUrl).toBe(true);
     });
   });
   describe("evaluateHeadings", () => {

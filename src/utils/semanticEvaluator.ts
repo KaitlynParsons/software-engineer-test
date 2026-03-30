@@ -19,10 +19,13 @@ export type SemanticEvaluation = {
  * Given a URL, evaluates the semantic heading structure of a web page.
  *
  * Usage:
- * try {
- *  new SemanticEvaluator("https://example.com");
- * } catch (e) {
- *  console.error("Invalid URL", e);
+ *
+ * const evaluator = new SemanticEvaluator("https://example.com");
+ *
+ * if (evaluator.isValidUrl()) {
+ *
+ * return evaluator.evaluateHeadings();
+ *
  * }
  */
 export class SemanticEvaluator {
@@ -30,7 +33,6 @@ export class SemanticEvaluator {
   private isBrowser: boolean;
 
   constructor(url: string, isBrowser: boolean = true) {
-    new URL(url); // throw early if invalid url
     this.url = url;
     this.isBrowser = isBrowser;
   }
@@ -99,6 +101,20 @@ export class SemanticEvaluator {
       skippedLevels,
       incongruentHeadings,
     };
+  }
+
+  /**
+   * Checks whether the configured URL is valid and uses the HTTPS protocol.
+   *
+   * @returns `true` if the URL is well-formed and secure, `false` otherwise.
+   */
+  public isValidUrl(): boolean {
+    try {
+      const url = new URL(this.url);
+      return url.protocol === "https:";
+    } catch {
+      return false;
+    }
   }
 
   /**
